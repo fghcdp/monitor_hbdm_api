@@ -4,7 +4,7 @@
 
 CREATE TABLE public.depth
 (
-    id integer NOT NULL DEFAULT nextval('depth_id_seq'::regclass),
+    id serial NOT NULL,
     mrid bigint NOT NULL,
     contract_type character(255) COLLATE pg_catalog."default" NOT NULL,
     ts bigint NOT NULL,
