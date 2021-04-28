@@ -22,7 +22,6 @@ class Ws:
         self._flag = f'{flag}/{self._url}'
 
         self._ws = None
-        self._worker = None
         self._create_ws()
 
         self._access_key = access_key
@@ -38,17 +37,14 @@ class Ws:
 
     def _create_ws(self):
         self._ws = None
-        if self._worker is not None:
-            stop_thread(self._worker)
-        self._worker = None
         self._ws = websocket.WebSocketApp(self._url,
                                           on_open=self._on_open,
                                           on_message=self._on_msg,
                                           on_close=self._on_close,
                                           on_error=self._on_error)
-        self._worker = threading.Thread(
+        swt = threading.Thread(
             target=self._ws.run_forever, daemon=True)
-        self._worker.start()
+        swt.start()
         self._can_work = False
         self._error = False
 
@@ -86,7 +82,7 @@ class Ws:
                                  self._access_key, self._secret_key)
         else:
             self._can_work = True
-        self.on_open()
+        self.on_open(ws)
 
     def on_open(self, ws):
         pass
@@ -138,7 +134,7 @@ class Ws:
             self.sub(self._sub_dict, self._sub_callback)
         else:
             self._error = True
-        self.on_close()
+        self.on_close(ws)
 
     def on_close(self, ws):
         pass
@@ -146,7 +142,7 @@ class Ws:
     def _on_error(self, ws, error):
         logger.error(f'error in {self._flag}')
         self._error = True
-        self.on_error(error)
+        self.on_error(ws, error)
 
     def on_error(self, ws, error):
         pass
