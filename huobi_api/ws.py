@@ -13,7 +13,7 @@ import time
 
 
 class Ws:
-    def __init__(self, flag:str, path: str, host: str = None, access_key: str = None, secret_key: str = None):
+    def __init__(self, flag: str, path: str, host: str = None, access_key: str = None, secret_key: str = None):
         self._path = path
         if host is None:
             host = "api.btcgateway.pro"
@@ -46,7 +46,8 @@ class Ws:
                                           on_message=self._on_msg,
                                           on_close=self._on_close,
                                           on_error=self._on_error)
-        self._worker = threading.Thread(target=self._ws.run_forever, daemon=True)
+        self._worker = threading.Thread(
+            target=self._ws.run_forever, daemon=True)
         self._worker.start()
         self._can_work = False
         self._error = False
@@ -78,7 +79,7 @@ class Ws:
         self._ws.send(data)
         logger.debug(data)
 
-    def _on_open(self):
+    def _on_open(self, ws):
         logger.info(f'ws open in {self._flag}')
         if self._access_key is not None or self._secret_key is not None:
             self._send_auth_data('get', self._path, self._host,
@@ -87,10 +88,10 @@ class Ws:
             self._can_work = True
         self.on_open()
 
-    def on_open(self):
+    def on_open(self, ws):
         pass
 
-    def _on_msg(self, message):
+    def _on_msg(self, ws, message):
         try:
             plain = gzip.decompress(message).decode()
             jdata = json.loads(plain)
@@ -130,7 +131,7 @@ class Ws:
             logger.error(e)
             logger.error(jdata)
 
-    def _on_close(self):
+    def _on_close(self, ws):
         logger.info(f"ws close in {self._flag}")
         if not self._active_close and self._sub_dict is not None:
             self._create_ws()
@@ -139,22 +140,23 @@ class Ws:
             self._error = True
         self.on_close()
 
-    def on_close(self):
+    def on_close(self, ws):
         pass
 
-    def _on_error(self, error):
+    def _on_error(self, ws, error):
         logger.error(f'error in {self._flag}')
         self._error = True
         self.on_error(error)
 
-    def on_error(self, error):
+    def on_error(self, ws, error):
         pass
 
     def sub(self, sub_dict: dict, callback):
         while not self._can_work:
             time.sleep(1)
             if self._error:
-                logger.error(f'ws error, do not sub: {sub_dict} in {self._flag}')
+                logger.error(
+                    f'ws error, do not sub: {sub_dict} in {self._flag}')
                 return
 
         self._sub_dict = sub_dict
@@ -168,12 +170,13 @@ class Ws:
         while not self._can_work:
             time.sleep(1)
             if self._error:
-                logger.error(f'ws error, do not unsub: {sub_dict} in {self._flag}')
+                logger.error(
+                    f'ws error, do not unsub: {sub_dict} in {self._flag}')
                 return
-        
+
         self._sub_dict = None
         self._sub_callback = None
-        
+
         unsub_str = json.dumps(unsub_dict)
         self._ws.send(unsub_str)
         logger.info(f'{unsub_str} in {self._flag}')
@@ -182,7 +185,8 @@ class Ws:
         while not self._can_work:
             time.sleep(1)
             if self._error:
-                logger.error(f'ws error, do not req: {sub_dict} in {self._flag}')
+                logger.error(
+                    f'ws error, do not req: {sub_dict} in {self._flag}')
                 return
 
         self._req_callback = callback
