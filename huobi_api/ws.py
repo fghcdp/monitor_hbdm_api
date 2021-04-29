@@ -16,7 +16,7 @@ class Ws:
     def __init__(self, flag: str, path: str, host: str = None, access_key: str = None, secret_key: str = None):
         self._path = path
         if host is None:
-            host = "api.btcgateway.pro"
+            host = "api.hbdm.vn"
         self._host = host
         self._url = 'wss://{}{}'.format(host, path)
         self._flag = f'{flag}/{self._url}'
