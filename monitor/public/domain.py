@@ -20,7 +20,7 @@ class Domain():
                        'swap': '/swap-ex/market/history/kline',
                        'linear-swap': '/linear-swap-ex/market/history/kline'}
 
-        self._con = self._con = Connect()
+        self._con = Connect()
         self._db = db_name
         self._tb = tb_name
         self._symbol = symbol

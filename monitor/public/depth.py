@@ -14,7 +14,7 @@ class Depth():
         self._csws = Ws(flag, '/swap-ws')
         self._usws = Ws(flag, '/linear-swap-ws')
 
-        self._con = self._con = Connect()
+        self._con = Connect()
         self._db = db_name
         self._tb = tb_name
         self._symbol = symbol

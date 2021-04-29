@@ -1,4 +1,5 @@
 from monitor import public
+from clear_db import utils
 from log.logger import *
 import time
 
@@ -30,5 +31,6 @@ def _run_pub_monitor():
 if __name__ == '__main__':
     db_name = 'hbdm_api'
     _run_pub_monitor()
+    utils.run_clear_public()
     while True:
         time.sleep(1)

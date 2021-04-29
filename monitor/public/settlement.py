@@ -14,7 +14,7 @@ class Settlement():
         self._csws = Ws(flag, '/swap-notification')
         self._usws = Ws(flag, '/linear-swap-notification')
 
-        self._con = self._con = Connect()
+        self._con = Connect()
         self._db = db_name
         self._tb = tb_name
 

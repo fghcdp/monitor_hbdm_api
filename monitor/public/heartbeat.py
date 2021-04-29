@@ -14,7 +14,7 @@ class Heartbeat():
         self._csws = Ws(flag, '/center-notification')
         self._usws = Ws(flag, '/center-notification')
 
-        self._con = self._con = Connect()
+        self._con = Connect()
         self._db = db_name
         self._tb = tb_name
 
